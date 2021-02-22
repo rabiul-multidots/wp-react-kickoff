@@ -30096,40 +30096,50 @@ var _axios2 = _interopRequireDefault(_axios);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Settings = function Settings() {
-    var _useState = (0, _react.useState)({
-        firstname: '',
-        lastname: '',
-        email: ''
-    }),
+    var _useState = (0, _react.useState)(''),
         _useState2 = _slicedToArray(_useState, 2),
-        formData = _useState2[0],
-        setFormData = _useState2[1];
+        firstName = _useState2[0],
+        setFirstName = _useState2[1];
 
-    var _useForm = (0, _reactHookForm.useForm)(),
-        register = _useForm.register,
-        handleSubmit = _useForm.handleSubmit;
+    var _useState3 = (0, _react.useState)(''),
+        _useState4 = _slicedToArray(_useState3, 2),
+        lastName = _useState4[0],
+        setLastName = _useState4[1];
+
+    var _useState5 = (0, _react.useState)(''),
+        _useState6 = _slicedToArray(_useState5, 2),
+        email = _useState6[0],
+        setEmail = _useState6[1];
+
+    var _useState7 = (0, _react.useState)('Save Settings'),
+        _useState8 = _slicedToArray(_useState7, 2),
+        loader = _useState8[0],
+        setLoader = _useState8[1];
 
     var url = appLocalizer.apiUrl + '/wprk/v1/settings';
 
-    var onSubmit = function onSubmit(data) {
+    var handleSubmit = function handleSubmit(e) {
+        e.preventDefault();
+        setLoader('Saving...');
         _axios2.default.post(url, {
-            firstname: data.firstname,
-            lastname: data.lastname,
-            email: data.email
+            firstname: firstName,
+            lastname: lastName,
+            email: email
         }, {
             headers: {
                 'content-type': 'application/json',
                 'X-WP-NONCE': appLocalizer.nonce
             }
         }).then(function (res) {
-            // console.log( res );
+            setLoader('Save Settings');
         });
     };
 
     (0, _react.useEffect)(function () {
         _axios2.default.get(url).then(function (res) {
-            setFormData(res.data);
-            console.log(res.data);
+            setFirstName(res.data.firstname);
+            setLastName(res.data.lastname);
+            setEmail(res.data.email);
         });
     }, []);
 
@@ -30143,7 +30153,9 @@ var Settings = function Settings() {
         ),
         wp.element.createElement(
             'form',
-            { id: 'wprk-settings-form', onSubmit: handleSubmit(onSubmit) },
+            { id: 'wprk-settings-form', onSubmit: function onSubmit(e) {
+                    return handleSubmit(e);
+                } },
             wp.element.createElement(
                 'table',
                 { className: 'form-table', role: 'presentation' },
@@ -30165,7 +30177,9 @@ var Settings = function Settings() {
                         wp.element.createElement(
                             'td',
                             null,
-                            wp.element.createElement('input', { id: 'firstname', name: 'firstname', ref: register, className: 'regular-text' })
+                            wp.element.createElement('input', { id: 'firstname', name: 'firstname', value: firstName, onChange: function onChange(e) {
+                                    setFirstName(e.target.value);
+                                }, className: 'regular-text' })
                         )
                     ),
                     wp.element.createElement(
@@ -30183,7 +30197,9 @@ var Settings = function Settings() {
                         wp.element.createElement(
                             'td',
                             null,
-                            wp.element.createElement('input', { id: 'lastname', name: 'lastname', ref: register, className: 'regular-text' })
+                            wp.element.createElement('input', { id: 'lastname', name: 'lastname', value: lastName, onChange: function onChange(e) {
+                                    setLastName(e.target.value);
+                                }, className: 'regular-text' })
                         )
                     ),
                     wp.element.createElement(
@@ -30201,7 +30217,9 @@ var Settings = function Settings() {
                         wp.element.createElement(
                             'td',
                             null,
-                            wp.element.createElement('input', { id: 'email', name: 'email', ref: register, className: 'regular-text' })
+                            wp.element.createElement('input', { id: 'email', name: 'email', value: email, onChange: function onChange(e) {
+                                    setEmail(e.target.value);
+                                }, className: 'regular-text' })
                         )
                     )
                 )
@@ -30212,7 +30230,7 @@ var Settings = function Settings() {
                 wp.element.createElement(
                     'button',
                     { type: 'submit', className: 'button button-primary' },
-                    'Save Settings'
+                    loader
                 )
             )
         )
